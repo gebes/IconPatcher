@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: VariableProvider
+metadata:
+  name: vars
+spec:
+  variables:
+    - name: jetbrains
+      value: "/Users/christoph/Library/Application Support/JetBrains/Toolbox/apps"
+    - name: icons
+      value: "/Users/christoph/Documents/Icons"
+---
+apiVersion: v1
+kind: AppProvider
+metadata:
+  name: apps
+  components:
+    - vars
+spec:
+  apps:
+    - name: IntelliJ
+      path: "$vars.jetbrains/IDEA-U"
+      appPattern: "IntelliJ IDEA.*\\.app$"
+      icnsPattern: "idea.icns$"
+    - name: GoLand
+      path: "$vars.jetbrains/Goland"
+      appPattern: "GoLand.*\\.app$"
+      icnsPattern: "goland.icns$"
+    - name: DataGrip
+      path: "$vars.jetbrains/datagrip"
+      appPattern: "DataGrip.*\\.app$"
+      icnsPattern: "datagrip.icns$"
+---
+apiVersion: v1
+kind: IconProvider
+metadata:
+  name: icons
+  components:
+    - vars
+spec:
+  icons:
+    - name: IntelliJ
+      path: "$vars.icons/IntelliJ.icns"
+    - name: GoLand
+      path: "$vars.icons/GoLand.icns"
+    - name: DataGrip
+      path: "$vars.icons/DataGrip.icns"
+---
+apiVersion: v1
+kind: Patcher
+metadata:
+  name: patcher
+  components:
+    - apps
+    - icons
+spec:
+  refreshDock: true
+  matches:
+    - appProvider: apps
+      iconProvider: icons
+      priority: 1
+  patches:
+    - app: apps.IntelliJ # intellij ist das neue goland
+      icon: icons.IntelliJ
+      priority: 2
