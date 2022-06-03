@@ -10,9 +10,6 @@ jobs:
       matrix:
         goos: [darwin]
         goarch: [amd64, arm64]
-        exclude:
-          - goarch: amd64
-            goos: darwin
     steps:
     - uses: actions/checkout@v3
     - uses: wangyoucao577/go-release-action@v1.28
