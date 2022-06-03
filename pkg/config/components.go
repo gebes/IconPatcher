@@ -81,6 +81,7 @@ type (
 		} `yaml:"metadata"`
 		Specifications struct {
 			RefreshDock bool    `yaml:"refreshDock"`
+			DryRun      bool    `yaml:"dryRun"`
 			Matches     []Match `yaml:"matches"`
 			Patches     []Patch `yaml:"patches"`
 		} `yaml:"spec"`

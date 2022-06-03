@@ -54,6 +54,7 @@ metadata:
     - icons
 spec:
   refreshDock: true
+  dryRun: true
   matches:
     - appProvider: apps
       iconProvider: icons

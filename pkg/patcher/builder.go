@@ -1,8 +1,8 @@
 package patcher
 
 import (
-	"IconUpdater/pkg/config"
 	"fmt"
+	"github.com/Gebes/IconUpdater/pkg/config"
 	"strings"
 )
 
@@ -27,6 +27,7 @@ func buildPatches(patcher config.Patcher, apps []App, icons []Icon) ([]patch, er
 				App:      currentApp,
 				Icon:     currentIcon,
 				Priority: match.Priority,
+				DryRun:   patcher.Specifications.DryRun,
 			})
 		}
 	}
@@ -69,6 +70,7 @@ func buildPatches(patcher config.Patcher, apps []App, icons []Icon) ([]patch, er
 			App:      *app,
 			Icon:     *icon,
 			Priority: currentPatch.Priority,
+			DryRun:   patcher.Specifications.DryRun,
 		})
 	}
 

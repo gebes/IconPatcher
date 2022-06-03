@@ -1,4 +1,4 @@
-module IconUpdater
+module github.com/Gebes/IconUpdater
 
 go 1.18
 

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"IconUpdater/pkg/config"
-	"IconUpdater/pkg/patcher"
 	"fmt"
+	"github.com/Gebes/IconUpdater/pkg/config"
+	"github.com/Gebes/IconUpdater/pkg/patcher"
 	"os"
 )
 

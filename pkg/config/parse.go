@@ -1,9 +1,9 @@
 package config
 
 import (
-	"IconUpdater/pkg/file"
 	"bytes"
 	"fmt"
+	"github.com/Gebes/IconUpdater/pkg/file"
 	"gopkg.in/yaml.v3"
 	"io"
 )

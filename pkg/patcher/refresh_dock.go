@@ -1,7 +1,7 @@
 package patcher
 
 import (
-	"IconUpdater/pkg/file"
+	"github.com/Gebes/IconUpdater/pkg/file"
 	"os/exec"
 	"path/filepath"
 )

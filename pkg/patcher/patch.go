@@ -1,9 +1,9 @@
 package patcher
 
 import (
-	"IconUpdater/pkg/config"
-	"IconUpdater/pkg/file"
 	"fmt"
+	"github.com/Gebes/IconUpdater/pkg/config"
+	"github.com/Gebes/IconUpdater/pkg/file"
 	"path"
 )
 
@@ -12,6 +12,7 @@ type (
 		App      App
 		Icon     Icon
 		Priority int
+		DryRun   bool
 	}
 	App struct {
 		Provider config.AppProvider
@@ -73,20 +74,26 @@ func (patch *patch) Apply() error {
 		}
 		for _, icn := range icns {
 
-			wasBackupCreated, backupPath, err := createBackupFile(icn)
+			wasBackupCreated, backupPath, err := createBackupFile(icn, patch.DryRun)
 			if err != nil {
 				return err
 			}
 
-			_, err = file.Copy(patch.Icon.Path, icn)
-			if err != nil {
-				return err
+			if !patch.DryRun {
+				_, err = file.Copy(patch.Icon.Path, icn)
+				if err != nil {
+					return err
+				}
+				fmt.Println(patch.Icon.Path, "->", icn)
+
+			} else {
+				fmt.Println(patch.Icon.Path, "->", icn, "(DryRun)")
 			}
 
-			fmt.Println(patch.Icon.Path, "->", icn)
 			if wasBackupCreated {
 				fmt.Println("\tCreated backup:", backupPath)
 			}
+
 		}
 		err = file.Touch(appPath)
 		if err != nil {
@@ -97,15 +104,18 @@ func (patch *patch) Apply() error {
 }
 
 // createBackupFile creates a copy with "_backup" as extension, if the backup file does not exist. Returns true if a backup was created
-func createBackupFile(icn string) (bool, string, error) {
+func createBackupFile(icn string, dryRun bool) (bool, string, error) {
 	backupPath := icn + "_backup"
 	exists, err := file.Exists(backupPath)
 	if err != nil || exists {
 		return false, backupPath, err
 	}
-	_, err = file.Copy(icn, backupPath)
-	if err != nil {
-		return false, backupPath, err
+
+	if !dryRun {
+		_, err = file.Copy(icn, backupPath)
+		if err != nil {
+			return false, backupPath, err
+		}
 	}
 	return true, backupPath, nil
 }
