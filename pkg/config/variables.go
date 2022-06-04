@@ -23,6 +23,10 @@ func (p *IconProvider) ApplyVariables(provider VariableProvider) {
 			applyVariable(key, value, &p.Specifications.Icons[i].Name)
 			applyVariable(key, value, &p.Specifications.Icons[i].Path)
 		}
+		for i := range p.Specifications.IconFolders {
+			applyVariable(key, value, &p.Specifications.IconFolders[i].Path)
+			applyVariable(key, value, &p.Specifications.IconFolders[i].IcnsPattern)
+		}
 	}
 }
 
@@ -34,6 +38,7 @@ func (p *AppProvider) ApplyVariables(provider VariableProvider) {
 			applyVariable(key, value, &p.Specifications.Apps[i].Path)
 			applyVariable(key, value, &p.Specifications.Apps[i].AppPattern)
 			applyVariable(key, value, &p.Specifications.Apps[i].IcnsPattern)
+			applyVariable(key, value, &p.Specifications.Apps[i].IcnsPath)
 		}
 	}
 }

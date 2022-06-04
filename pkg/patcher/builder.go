@@ -3,6 +3,8 @@ package patcher
 import (
 	"fmt"
 	"github.com/Gebes/IconUpdater/pkg/config"
+	"github.com/Gebes/IconUpdater/pkg/file"
+	"path"
 	"strings"
 )
 
@@ -77,7 +79,7 @@ func buildPatches(patcher config.Patcher, apps []App, icons []Icon) ([]patch, er
 	return patches, nil
 }
 
-func buildAppsAndIcons(configurations *config.Components) ([]App, []Icon) {
+func buildAppsAndIcons(configurations *config.Components) ([]App, []Icon, error) {
 	apps := make([]App, 0)
 	for _, provider := range configurations.AppProviders {
 		for _, currentApp := range provider.Specifications.Apps {
@@ -95,6 +97,25 @@ func buildAppsAndIcons(configurations *config.Components) ([]App, []Icon) {
 				Icon:     currentIcon,
 			})
 		}
+		for _, folder := range provider.Specifications.IconFolders {
+			paths, err := file.Find(folder.Path, folder.IcnsPattern)
+			if err != nil {
+				return nil, nil, err
+			}
+
+			for _, icnsPath := range paths {
+				fileWithExt := path.Base(icnsPath)
+				file := strings.TrimSuffix(fileWithExt, path.Ext(fileWithExt))
+				icons = append(icons, Icon{
+					Provider: provider,
+					Icon: config.Icon{
+						Name: file,
+						Path: icnsPath,
+					},
+				})
+			}
+		}
 	}
-	return apps, icons
+
+	return apps, icons, nil
 }

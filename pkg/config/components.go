@@ -52,6 +52,7 @@ type (
 		Path        string `yaml:"path"`
 		AppPattern  string `yaml:"appPattern"`
 		IcnsPattern string `yaml:"icnsPattern"`
+		IcnsPath    string `yaml:"icnsPath"`
 	}
 )
 
@@ -62,13 +63,18 @@ type (
 			Name string `yaml:"name"`
 		} `yaml:"metadata"`
 		Specifications struct {
-			Icons []Icon `yaml:"icons"`
+			Icons       []Icon       `yaml:"icons"`
+			IconFolders []IconFolder `yaml:"folders"`
 		} `yaml:"spec"`
 	}
 
 	Icon struct {
 		Name string `yaml:"name"`
 		Path string `yaml:"path"`
+	}
+	IconFolder struct {
+		Path        string `yaml:"path"`
+		IcnsPattern string `yaml:"icnsPattern"`
 	}
 )
 

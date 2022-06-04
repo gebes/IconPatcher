@@ -25,7 +25,10 @@ type (
 )
 
 func Apply(components *config.Components) error {
-	apps, icons := buildAppsAndIcons(components)
+	apps, icons, err := buildAppsAndIcons(components)
+	if err != nil {
+		return err
+	}
 
 	patches := map[string]patch{}
 	refresh := false
@@ -37,7 +40,7 @@ func Apply(components *config.Components) error {
 		for _, currentPatch := range builtPatches {
 			patchToCompare, ok := patches[currentPatch.App.Path]
 			if !ok || patchToCompare.Priority < currentPatch.Priority {
-				patches[currentPatch.App.Path] = currentPatch
+				patches[currentPatch.App.Name] = currentPatch
 			}
 		}
 		if patcher.Specifications.RefreshDock {
@@ -63,6 +66,36 @@ func Apply(components *config.Components) error {
 }
 
 func (patch *patch) Apply() error {
+
+	if len(patch.App.IcnsPath) != 0 {
+		icn := patch.App.IcnsPath
+		wasBackupCreated, backupPath, err := createBackupFile(icn, patch.DryRun)
+		if err != nil {
+			return err
+		}
+
+		if !patch.DryRun {
+			_, err = file.Copy(patch.Icon.Path, icn)
+			if err != nil {
+				return err
+			}
+			fmt.Println(patch.Icon.Path, "->", icn)
+		} else {
+			fmt.Println(patch.Icon.Path, "->", icn, "(DryRun)")
+		}
+
+		if wasBackupCreated {
+			fmt.Println("\tCreated backup:", backupPath)
+		}
+
+		appPath := path.Dir(path.Dir(path.Dir(icn)))
+		err = file.Touch(appPath)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
 	appPaths, err := file.Find(patch.App.Path, patch.App.AppPattern)
 	if err != nil {
 		return err
