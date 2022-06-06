@@ -6,6 +6,8 @@ spec:
   variables:
     - name: jetbrains
       value: "/Users/christoph/Library/Application Support/JetBrains/Toolbox/apps"
+    - name: apps
+      value: "/Applications"
     - name: icons
       value: "/Users/christoph/Documents/Icons"
 ---
@@ -25,10 +27,28 @@ spec:
       path: "$vars.jetbrains/Goland"
       appPattern: "GoLand.*\\.app$"
       icnsPattern: "goland.icns$"
+    - name: CLion
+      path: "$vars.jetbrains/CLion"
+      appPattern: "CLion.*\\.app$"
+      icnsPattern: "clion.icns$"
+    - name: WebStorm
+      path: "$vars.jetbrains/WebStorm"
+      appPattern: "WebStorm.*\\.app$"
+      icnsPattern: "webstorm.icns$"
     - name: DataGrip
       path: "$vars.jetbrains/datagrip"
       appPattern: "DataGrip.*\\.app$"
       icnsPattern: "datagrip.icns$"
+    - name: Android Studio
+      path: "$vars.jetbrains/AndroidStudio"
+      appPattern: "Android Studio.*\\.app$"
+      icnsPattern: "studio.icns$"
+      #- name: Brave
+      #icnsPath: "$vars.apps/Brave Browser.app/Contents/Resources/app.icns"
+    - name: Notion
+      icnsPath: "$vars.apps/Notion.app/Contents/Resources/electron.icns"
+    - name: Docker 
+      icnsPath: "$vars.apps/Docker.app/Contents/MacOS/Docker Desktop.app/Contents/Resources/icon.icns"
 ---
 apiVersion: v1
 kind: IconProvider
@@ -37,13 +57,16 @@ metadata:
   components:
     - vars
 spec:
+  # Find Icons automatically in a folder based on the search pattern.
+  # THe name of the Icon is the file name without the extension
+  folders:
+    - path: "$vars.icons"
+      icnsPattern: ".*\\.icns$"
   icons:
-    - name: IntelliJ
-      path: "$vars.icons/IntelliJ.icns"
-    - name: GoLand
-      path: "$vars.icons/GoLand.icns"
-    - name: DataGrip
-      path: "$vars.icons/DataGrip.icns"
+  # Manually define a icon
+  #  - name: GoLand
+  #    path: "$vars.icons/GoLand.icns"
+
 ---
 apiVersion: v1
 kind: Patcher
@@ -54,12 +77,17 @@ metadata:
     - icons
 spec:
   refreshDock: true
-  dryRun: true
+  dryRun: false
+  # Automatically patch all apps with the icon that has the same name
   matches:
     - appProvider: apps
       iconProvider: icons
       priority: 1
+  # Manually define a patch
   patches:
-    - app: apps.IntelliJ # intellij ist das neue goland
-      icon: icons.IntelliJ
-      priority: 2
+   - app: apps.Notion
+     icon: icons.Notion4
+     priority: 2
+   - app: apps.Docker
+     icon: icons.Docker3
+     priority: 2
